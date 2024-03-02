@@ -1,32 +1,28 @@
-import { Component, Prop, h } from '@stencil/core';
-import { format } from '../../utils/utils';
+import { Component, Host, State, h } from '@stencil/core';
 
 @Component({
   tag: 'my-component',
   styleUrl: 'my-component.css',
-  shadow: true,
+  shadow: false,
+  scoped: true,
 })
 export class MyComponent {
-  /**
-   * The first name
-   */
-  @Prop() first: string;
-
-  /**
-   * The middle name
-   */
-  @Prop() middle: string;
-
-  /**
-   * The last name
-   */
-  @Prop() last: string;
-
-  private getText(): string {
-    return format(this.first, this.middle, this.last);
-  }
+  @State() headerVisible = true;
+  @State() contentVisible = true;
 
   render() {
-    return <div>Hello, World! I'm {this.getText()}</div>;
+    return (
+      <Host>
+        {this.headerVisible ? <slot name="header" /> : null}
+        {this.contentVisible ? <slot /> : null}
+
+        <button onClick={() => (this.headerVisible = !this.headerVisible)}>
+          Toggle header visibility (to {this.headerVisible ? 'hidden' : 'visible'})
+          </button>
+        <button onClick={() => (this.contentVisible = !this.contentVisible)}>
+          Toggle content visibility (to {this.contentVisible ? 'hidden' : 'visible'})
+        </button>
+      </Host>
+    );
   }
 }
